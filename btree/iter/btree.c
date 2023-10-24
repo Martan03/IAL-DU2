@@ -1,8 +1,8 @@
 /*
  * Binární vyhledávací strom — iterativní varianta
  *
- * S využitím datových typů ze souboru btree.h, zásobníku ze souboru stack.h 
- * a připravených koster funkcí implementujte binární vyhledávací 
+ * S využitím datových typů ze souboru btree.h, zásobníku ze souboru stack.h
+ * a připravených koster funkcí implementujte binární vyhledávací
  * strom bez použití rekurze.
  */
 
@@ -17,7 +17,7 @@
  * Uživatel musí zajistit, že inicializace se nebude opakovaně volat nad
  * inicializovaným stromem. V opačném případě může dojít k úniku paměti (memory
  * leak). Protože neinicializovaný ukazatel má nedefinovanou hodnotu, není
- * možné toto detekovat ve funkci. 
+ * možné toto detekovat ve funkci.
  */
 void bst_init(bst_node_t **tree) {
 }
@@ -28,11 +28,22 @@ void bst_init(bst_node_t **tree) {
  * V případě úspěchu vrátí funkce hodnotu true a do proměnné value zapíše
  * hodnotu daného uzlu. V opačném případě funkce vrátí hodnotu false a proměnná
  * value zůstává nezměněná.
- * 
+ *
  * Funkci implementujte iterativně bez použité vlastních pomocných funkcí.
  */
 bool bst_search(bst_node_t *tree, char key, int *value) {
-  return false;
+    while (tree) {
+        if (tree->key == key) {
+            *value = tree->value;
+            return true;
+        }
+
+        if (tree->key < key)
+            tree = tree->right;
+        else
+            tree = tree->left;
+    }
+    return false;
 }
 
 /*
@@ -42,7 +53,7 @@ bool bst_search(bst_node_t *tree, char key, int *value) {
  * Jinak vložte nový listový uzel.
  *
  * Výsledný strom musí splňovat podmínku vyhledávacího stromu — levý podstrom
- * uzlu obsahuje jenom menší klíče, pravý větší. 
+ * uzlu obsahuje jenom menší klíče, pravý větší.
  *
  * Funkci implementujte iterativně bez použití vlastních pomocných funkcí.
  */
@@ -51,13 +62,13 @@ void bst_insert(bst_node_t **tree, char key, int value) {
 
 /*
  * Pomocná funkce která nahradí uzel nejpravějším potomkem.
- * 
+ *
  * Klíč a hodnota uzlu target budou nahrazené klíčem a hodnotou nejpravějšího
  * uzlu podstromu tree. Nejpravější potomek bude odstraněný. Funkce korektně
  * uvolní všechny alokované zdroje odstraněného uzlu.
  *
  * Funkce předpokládá, že hodnota tree není NULL.
- * 
+ *
  * Tato pomocná funkce bude využita při implementaci funkce bst_delete.
  *
  * Funkci implementujte iterativně bez použití vlastních pomocných funkcí.
@@ -72,9 +83,9 @@ void bst_replace_by_rightmost(bst_node_t *target, bst_node_t **tree) {
  * Pokud má odstraněný uzel jeden podstrom, zdědí ho rodič odstraněného uzlu.
  * Pokud má odstraněný uzel oba podstromy, je nahrazený nejpravějším uzlem
  * levého podstromu. Nejpravější uzel nemusí být listem.
- * 
+ *
  * Funkce korektně uvolní všechny alokované zdroje odstraněného uzlu.
- * 
+ *
  * Funkci implementujte iterativně pomocí bst_replace_by_rightmost a bez
  * použití vlastních pomocných funkcí.
  */
@@ -83,12 +94,12 @@ void bst_delete(bst_node_t **tree, char key) {
 
 /*
  * Zrušení celého stromu.
- * 
- * Po zrušení se celý strom bude nacházet ve stejném stavu jako po 
- * inicializaci. Funkce korektně uvolní všechny alokované zdroje rušených 
+ *
+ * Po zrušení se celý strom bude nacházet ve stejném stavu jako po
+ * inicializaci. Funkce korektně uvolní všechny alokované zdroje rušených
  * uzlů.
- * 
- * Funkci implementujte iterativně s pomocí zásobníku a bez použití 
+ *
+ * Funkci implementujte iterativně s pomocí zásobníku a bez použití
  * vlastních pomocných funkcí.
  */
 void bst_dispose(bst_node_t **tree) {
@@ -100,7 +111,7 @@ void bst_dispose(bst_node_t **tree) {
  * Prochází po levé větvi k nejlevějšímu uzlu podstromu.
  * Nad zpracovanými uzly zavolá bst_add_node_to_items a uloží je do zásobníku uzlů.
  *
- * Funkci implementujte iterativně s pomocí zásobníku a bez použití 
+ * Funkci implementujte iterativně s pomocí zásobníku a bez použití
  * vlastních pomocných funkcí.
  */
 void bst_leftmost_preorder(bst_node_t *tree, stack_bst_t *to_visit, bst_items_t *items) {
@@ -119,11 +130,11 @@ void bst_preorder(bst_node_t *tree, bst_items_t *items) {
 
 /*
  * Pomocná funkce pro iterativní inorder.
- * 
+ *
  * Prochází po levé větvi k nejlevějšímu uzlu podstromu a ukládá uzly do
  * zásobníku uzlů.
  *
- * Funkci implementujte iterativně s pomocí zásobníku a bez použití 
+ * Funkci implementujte iterativně s pomocí zásobníku a bez použití
  * vlastních pomocných funkcí.
  */
 void bst_leftmost_inorder(bst_node_t *tree, stack_bst_t *to_visit) {
