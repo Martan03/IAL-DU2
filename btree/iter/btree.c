@@ -115,6 +115,11 @@ void bst_dispose(bst_node_t **tree) {
  * vlastních pomocných funkcí.
  */
 void bst_leftmost_preorder(bst_node_t *tree, stack_bst_t *to_visit, bst_items_t *items) {
+    // Iterates to the leftmost node
+    for (; tree; tree = tree->left) {
+        bst_add_node_to_items(tree, to_visit);
+        bst_add_node_to_items(tree, items);
+    }
 }
 
 /*
@@ -126,6 +131,7 @@ void bst_leftmost_preorder(bst_node_t *tree, stack_bst_t *to_visit, bst_items_t 
  * zásobníku uzlů a bez použití vlastních pomocných funkcí.
  */
 void bst_preorder(bst_node_t *tree, bst_items_t *items) {
+
 }
 
 /*
@@ -138,6 +144,10 @@ void bst_preorder(bst_node_t *tree, bst_items_t *items) {
  * vlastních pomocných funkcí.
  */
 void bst_leftmost_inorder(bst_node_t *tree, stack_bst_t *to_visit) {
+    // Iterates to the leftmost node
+    for (; tree; tree = tree->left) {
+        bst_add_node_to_items(tree, to_visit);
+    }
 }
 
 /*
@@ -163,6 +173,10 @@ void bst_inorder(bst_node_t *tree, bst_items_t *items) {
  */
 void bst_leftmost_postorder(bst_node_t *tree, stack_bst_t *to_visit,
                             stack_bool_t *first_visit) {
+    // Iterates to the leftmost node
+    for (; tree; tree = tree->left) {
+        bst_add_node_to_items(tree, to_visit);
+    }
 }
 
 /*
