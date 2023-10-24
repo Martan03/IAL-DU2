@@ -71,14 +71,16 @@ bst_insert_many(&test_tree, base_keys, base_values, base_data_count);
 int result;
 bst_search(test_tree, 'A', &result);
 bst_print_tree(test_tree);
+printf("Found value: %d\n", result);
 ENDTEST
 
 TEST(test_tree_search_missing, "Search for a missing key (X)")
 bst_init(&test_tree);
 bst_insert_many(&test_tree, base_keys, base_values, base_data_count);
 int result;
-bst_search(test_tree, 'X', &result);
+bool found = bst_search(test_tree, 'X', &result);
 bst_print_tree(test_tree);
+printf("Found: %s\n", found ? "true" : "false");
 ENDTEST
 
 TEST(test_tree_delete_leaf, "Delete a leaf node (A)")
