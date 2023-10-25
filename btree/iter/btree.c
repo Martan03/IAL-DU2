@@ -263,6 +263,7 @@ void bst_leftmost_postorder(bst_node_t *tree, stack_bst_t *to_visit,
                             stack_bool_t *first_visit) {
     // Iterates to the leftmost node
     for (; tree; tree = tree->left) {
+        stack_bool_push(first_visit, true);
         stack_bst_push(to_visit, tree);
     }
 }
@@ -276,4 +277,25 @@ void bst_leftmost_postorder(bst_node_t *tree, stack_bst_t *to_visit,
  * zásobníku uzlů a bool hodnot a bez použití vlastních pomocných funkcí.
  */
 void bst_postorder(bst_node_t *tree, bst_items_t *items) {
+    stack_bst_t to_visit;
+    stack_bst_init(&to_visit);
+    stack_bool_t first_visit;
+    stack_bool_init(&first_visit);
+
+    bool left;
+
+    bst_leftmost_postorder(tree, &to_visit, &first_visit);
+    bst_node_t *node = NULL;
+    while (!stack_bst_empty(&to_visit)) {
+        node = stack_bst_top(&to_visit);
+        left = stack_bool_pop(&first_visit);
+
+        if (left) {
+            stack_bool_push(&first_visit, false);
+            bst_leftmost_postorder(node->right, &to_visit, &first_visit);
+        } else {
+            bst_add_node_to_items(node, items);
+            stack_bst_pop(&to_visit);
+        }
+    }
 }
