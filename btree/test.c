@@ -34,7 +34,7 @@ ENDTEST
 TEST(test_tree_search_empty, "Search in an empty tree (A)")
 bst_init(&test_tree);
 int result;
-bst_search(test_tree, 'A', &result);
+printf("Found: %s\n", bst_search(test_tree, 'A', &result) ? "true" : "false");
 ENDTEST
 
 TEST(test_tree_insert_root, "Insert an item (H,1)")
@@ -49,6 +49,7 @@ bst_insert(&test_tree, 'H', 1);
 int result;
 bst_search(test_tree, 'H', &result);
 bst_print_tree(test_tree);
+printf("Found value: %d\n", result);
 ENDTEST
 
 TEST(test_tree_update_root, "Update a node in a single node tree (H,1)->(H,8)")

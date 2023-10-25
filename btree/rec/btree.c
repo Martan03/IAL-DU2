@@ -98,7 +98,6 @@ void bst_replace_by_rightmost(bst_node_t *target, bst_node_t **tree) {
     target->value = (*tree)->value;
     free(*tree);
     *tree = NULL;
-    tree = NULL;
 }
 
 /*
@@ -122,7 +121,6 @@ void bst_delete(bst_node_t **tree, char key) {
         if (!(*tree)->right && !(*tree)->left) {
             free(*tree);
             *tree = NULL;
-            tree = NULL;
         }
         else if ((*tree)->right && (*tree)->left)
             bst_replace_by_rightmost(*tree, &(*tree)->left);
@@ -162,7 +160,6 @@ void bst_dispose(bst_node_t **tree) {
     // Frees current node
     free(*tree);
     *tree = NULL;
-    tree = NULL;
 }
 
 /*
