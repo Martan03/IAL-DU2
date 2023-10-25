@@ -203,10 +203,11 @@ void bst_preorder(bst_node_t *tree, bst_items_t *items) {
     stack_bst_init(&to_visit);
 
     bst_leftmost_preorder(tree, &to_visit, items);
-    bst_node_t *cur = NULL;
-    while ((cur = stack_bst_pop(&to_visit))) {
-        if (cur->right)
-            bst_leftmost_preorder(cur->right, &to_visit, items);
+    bst_node_t *node = NULL;
+    while (!stack_bst_empty(&to_visit)) {
+        node = stack_bst_pop(&to_visit);
+        if (node->right)
+            bst_leftmost_preorder(node->right, &to_visit, items);
     }
 }
 
@@ -235,6 +236,17 @@ void bst_leftmost_inorder(bst_node_t *tree, stack_bst_t *to_visit) {
  * zásobníku uzlů a bez použití vlastních pomocných funkcí.
  */
 void bst_inorder(bst_node_t *tree, bst_items_t *items) {
+    stack_bst_t to_visit;
+    stack_bst_init(&to_visit);
+
+    bst_leftmost_inorder(tree, &to_visit);
+    bst_node_t *node = NULL;
+    while (!stack_bst_empty(&to_visit)) {
+        node = stack_bst_pop(&to_visit);
+        bst_add_node_to_items(node, items);
+        if (node->right)
+            bst_leftmost_inorder(node->right, &to_visit);
+    }
 }
 
 /*
