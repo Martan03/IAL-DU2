@@ -282,15 +282,12 @@ void bst_postorder(bst_node_t *tree, bst_items_t *items) {
     stack_bool_t first_visit;
     stack_bool_init(&first_visit);
 
-    bool left;
-
     bst_leftmost_postorder(tree, &to_visit, &first_visit);
     bst_node_t *node = NULL;
     while (!stack_bst_empty(&to_visit)) {
         node = stack_bst_top(&to_visit);
-        left = stack_bool_pop(&first_visit);
 
-        if (left) {
+        if (stack_bool_pop(&first_visit)) {
             stack_bool_push(&first_visit, false);
             bst_leftmost_postorder(node->right, &to_visit, &first_visit);
         } else {

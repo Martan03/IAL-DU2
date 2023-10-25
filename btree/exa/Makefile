@@ -1,5 +1,5 @@
 CC=gcc
-CFLAGS=-Wall -std=c11 -pedantic -lm
+CFLAGS=-Wall -std=c11 -pedantic -lm -fsanitize=address -g
 FILES_REC=exa.c ../rec/btree.c ../btree.c ../test_util.c ../test.c
 FILES_ITER=exa.c ../iter/btree.c ../iter/stack.c ../btree.c ../test_util.c ../test.c
 

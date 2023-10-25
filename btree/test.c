@@ -188,6 +188,13 @@ bst_balance(&test_tree);
 bst_print_tree(test_tree);
 ENDTEST
 
+TEST(test_balance_real, "Count letters and balance");
+bst_init(&test_tree);
+letter_count(&test_tree, "kAc6_ ! oP k");
+bst_balance(&test_tree);
+bst_print_tree(test_tree);
+ENDTEST
+
 #endif // EXA
 
 int main(int argc, char *argv[]) {
@@ -216,5 +223,6 @@ int main(int argc, char *argv[]) {
 #ifdef EXA
   test_letter_count();
   test_balance();
+  test_balance_real();
 #endif // EXA
 }
