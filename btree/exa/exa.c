@@ -83,6 +83,16 @@ bool is_balanced(bst_node_t *tree, int *height) {
     return (left - right <= 1) && (right - left <= 1) && l && r;
 }
 
+void balance(bst_node_t **tree, bst_items_t *items, int start, int end) {
+    if (start >= end)
+        return;
+
+    int center = (start + end) / 2;
+    bst_insert(tree, items->nodes[center]->key, items->nodes[center]->value);
+    balance(tree, items, start, center);
+    balance(tree, items, center + 1, end);
+}
+
 /**
  * Vyvážení stromu.
  *
@@ -94,7 +104,20 @@ bool is_balanced(bst_node_t *tree, int *height) {
  * Pro implementaci si můžete v tomto souboru nadefinovat vlastní pomocné funkce. Není nutné, aby funkce fungovala *in situ* (in-place).
 */
 void bst_balance(bst_node_t **tree) {
-    int height = 0;
-    printf("%s\n", is_balanced(*tree, &height) ? "Balanced" : "Not balanced");
-    printf("%d\n", height);
+    bst_items_t items = {
+        .capacity = 0,
+        .size = 0,
+        .nodes = NULL,
+    };
+    bst_inorder(*tree, &items);
+
+    bst_node_t *balanced;
+    bst_init(&balanced);
+
+    balance(&balanced, &items, 0, items.size);
+
+    bst_dispose(tree);
+    *tree = balanced;
+
+    free(items.nodes);
 }
