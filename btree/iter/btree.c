@@ -33,17 +33,22 @@ void bst_init(bst_node_t **tree) {
  * Funkci implementujte iterativně bez použité vlastních pomocných funkcí.
  */
 bool bst_search(bst_node_t *tree, char key, int *value) {
+    // Iterates until tree is not NULL
     while (tree) {
+        // When current node key equals key, item found
         if (tree->key == key) {
             *value = tree->value;
             return true;
         }
 
+        // Goes to right subtree when current key is less then given key
         if (tree->key < key)
             tree = tree->right;
+        // Goes to left subtree when current key is greater then given key
         else
             tree = tree->left;
     }
+    // Item wasn't found
     return false;
 }
 
@@ -60,18 +65,23 @@ bool bst_search(bst_node_t *tree, char key, int *value) {
  */
 void bst_insert(bst_node_t **tree, char key, int value) {
     bst_node_t **node = &(*tree);
+    // Iterates until node is not NULL
     while (*node) {
+        // When key already exists, replaces the value
         if ((*node)->key == key) {
             (*node)->value = value;
             return;
         }
 
+        // Goes to the right subtree when current key is less then given key
         if ((*node)->key < key)
             node = &(*node)->right;
+        // Goes to the left subtree when current key is greater then given key
         else
             node = &(*node)->left;
     }
 
+    // Creates new item -> item with given key doesn't exist in the tree
     *node = malloc(sizeof(bst_node_t));
     if (!(*node))
         return;
@@ -96,10 +106,13 @@ void bst_insert(bst_node_t **tree, char key, int value) {
  */
 void bst_replace_by_rightmost(bst_node_t *target, bst_node_t **tree) {
     bst_node_t **node = &(*tree);
+    // Iterates until right subtree of current node is not NULL
     for (; (*node)->right; node = &(*node)->right)
         ;
+    // Sets the target node to rightmost
     target->key = (*node)->key;
     target->value = (*node)->value;
+    // Frees the rightmost node
     free(*node);
     *node = NULL;
 }
@@ -119,25 +132,33 @@ void bst_replace_by_rightmost(bst_node_t *target, bst_node_t **tree) {
  */
 void bst_delete(bst_node_t **tree, char key) {
     bst_node_t **node = &(*tree);
+    // Iterates until node is not NULL
     while (*node) {
+        // When current key equals to given key
         if ((*node)->key == key) {
+            // Node doesn't have any subtrees
             if (!(*node)->right && !(*node)->left) {
                 free(*node);
                 *node = NULL;
+            // Node has both subtrees
             } else if ((*node)->right && (*node)->left) {
                 bst_replace_by_rightmost(*node, &(*node)->left);
+            // Node has right subtree only
             } else if ((*node)->right) {
                 bst_node_t *rem = *node;
                 *node = (*node)->right;
                 free(rem);
+            // Node has left subtree only
             } else {
                 bst_node_t *rem = *node;
                 *node = (*node)->left;
                 free(rem);
             }
         }
+        // Goes to right subtree when current key is less then given key
         else if ((*node)->key < key)
             node = &(*node)->right;
+        // Goes to left subtree when current key is greater then given key
         else
             node = &(*node)->left;
     }
@@ -154,22 +175,31 @@ void bst_delete(bst_node_t **tree, char key) {
  * vlastních pomocných funkcí.
  */
 void bst_dispose(bst_node_t **tree) {
+    // Checks if tree is NULL
     if (!(*tree))
         return;
 
+    // Creates stack
     stack_bst_t stack;
     stack_bst_init(&stack);
 
+    // Pushes root node to stack
     stack_bst_push(&stack, *tree);
+    // Iterates until stack is not empty
     while (!stack_bst_empty(&stack)) {
+        // Gets item from the stack
         *tree = stack_bst_pop(&stack);
+        // Pushes right subnode to stack if exists
         if ((*tree)->right)
             stack_bst_push(&stack, (*tree)->right);
+        // Pushes left subnode to stack if exists
         if ((*tree)->left)
             stack_bst_push(&stack, (*tree)->left);
+        // Frees current item
         free(*tree);
     }
 
+    // Sets tree to NULL
     *tree = NULL;
 }
 
@@ -199,13 +229,17 @@ void bst_leftmost_preorder(bst_node_t *tree, stack_bst_t *to_visit, bst_items_t 
  * zásobníku uzlů a bez použití vlastních pomocných funkcí.
  */
 void bst_preorder(bst_node_t *tree, bst_items_t *items) {
+    // Creates new stack
     stack_bst_t to_visit;
     stack_bst_init(&to_visit);
 
     bst_leftmost_preorder(tree, &to_visit, items);
     bst_node_t *node = NULL;
+    // Iterates until stack is not empty
     while (!stack_bst_empty(&to_visit)) {
+        // Gets item from stack
         node = stack_bst_pop(&to_visit);
+        // When right subtree exists, call bst_leftmost_preorder
         if (node->right)
             bst_leftmost_preorder(node->right, &to_visit, items);
     }
@@ -236,14 +270,19 @@ void bst_leftmost_inorder(bst_node_t *tree, stack_bst_t *to_visit) {
  * zásobníku uzlů a bez použití vlastních pomocných funkcí.
  */
 void bst_inorder(bst_node_t *tree, bst_items_t *items) {
+    // Creates new stack
     stack_bst_t to_visit;
     stack_bst_init(&to_visit);
 
     bst_leftmost_inorder(tree, &to_visit);
     bst_node_t *node = NULL;
+    // Iterates until stack is not empty
     while (!stack_bst_empty(&to_visit)) {
+        // Gets item from the stack
         node = stack_bst_pop(&to_visit);
+        // Adds current item to final list
         bst_add_node_to_items(node, items);
+        // When right subtree exists, calls bst_leftmost_inorder
         if (node->right)
             bst_leftmost_inorder(node->right, &to_visit);
     }
@@ -277,6 +316,7 @@ void bst_leftmost_postorder(bst_node_t *tree, stack_bst_t *to_visit,
  * zásobníku uzlů a bool hodnot a bez použití vlastních pomocných funkcí.
  */
 void bst_postorder(bst_node_t *tree, bst_items_t *items) {
+    // Creates new stack for items to visit and for bool values
     stack_bst_t to_visit;
     stack_bst_init(&to_visit);
     stack_bool_t first_visit;
@@ -284,13 +324,20 @@ void bst_postorder(bst_node_t *tree, bst_items_t *items) {
 
     bst_leftmost_postorder(tree, &to_visit, &first_visit);
     bst_node_t *node = NULL;
+    // Iterates until stack is not empty
     while (!stack_bst_empty(&to_visit)) {
+        // Gets item from the stack
         node = stack_bst_top(&to_visit);
 
+        // When item is visited for the first time
         if (stack_bool_pop(&first_visit)) {
+            // Sets first_visit to false and call bst_leftmost_postorder
+            // for right subtree
             stack_bool_push(&first_visit, false);
             bst_leftmost_postorder(node->right, &to_visit, &first_visit);
+        // Item was already visited
         } else {
+            // Adds current item to the final list and pops from items to visit
             bst_add_node_to_items(node, items);
             stack_bst_pop(&to_visit);
         }

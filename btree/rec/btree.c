@@ -59,7 +59,9 @@ bool bst_search(bst_node_t *tree, char key, int *value) {
  * Funkci implementujte rekurzivně bez použití vlastních pomocných funkcí.
  */
 void bst_insert(bst_node_t **tree, char key, int value) {
+    // Checks if tree is NULL
     if (!tree || !(*tree)) {
+        // Creates new tree item with given key and value
         *tree = malloc(sizeof(bst_node_t));
         if (!(*tree))
             return;
@@ -68,10 +70,13 @@ void bst_insert(bst_node_t **tree, char key, int value) {
         (*tree)->left = NULL;
         (*tree)->right = NULL;
     }
+    // When key equals key of the current item, sets the value to given value
     else if ((*tree)->key == key)
         (*tree)->value = value;
+    // Inserts to right subtree when key is greater then current item key
     else if ((*tree)->key < key)
         bst_insert(&(*tree)->right, key, value);
+    // Inserts to left subtree when key is less then current item key
     else
         bst_insert(&(*tree)->left, key, value);
 }
@@ -90,12 +95,16 @@ void bst_insert(bst_node_t **tree, char key, int value) {
  * Funkci implementujte rekurzivně bez použití vlastních pomocných funkcí.
  */
 void bst_replace_by_rightmost(bst_node_t *target, bst_node_t **tree) {
+    // Checks if right subtree exists
     if ((*tree)->right) {
+        // Recursively calls this function for the right subtree
         bst_replace_by_rightmost(target, &(*tree)->right);
         return;
     }
+    // Replaces target item by the current (rightmost) item
     target->key = (*tree)->key;
     target->value = (*tree)->value;
+    // Frees current item
     free(*tree);
     *tree = NULL;
 }
@@ -114,27 +123,35 @@ void bst_replace_by_rightmost(bst_node_t *target, bst_node_t **tree) {
  * použití vlastních pomocných funkcí.
  */
 void bst_delete(bst_node_t **tree, char key) {
+    // Checks if tree is null
     if (!tree || !(*tree))
         return;
 
+    // Checks if key of current item equals to given key
     if ((*tree)->key == key) {
+        // Removes current item, which doesn't contain any subtree
         if (!(*tree)->right && !(*tree)->left) {
             free(*tree);
             *tree = NULL;
         }
+        // Removes current item, which contains both subtrees
         else if ((*tree)->right && (*tree)->left)
             bst_replace_by_rightmost(*tree, &(*tree)->left);
+        // Removes current item, which includes right subtree only
         else if ((*tree)->right) {
             bst_node_t *rem = *tree;
             *tree = (*tree)->right;
             free(rem);
+        // Removes current item, which includes left subtree only
         } else {
             bst_node_t *rem = *tree;
             *tree = (*tree)->left;
             free(rem);
         }
+    // Recursively calls for right subtree when key is greater then current key
     } else if ((*tree)->key < key) {
         bst_delete(&(*tree)->right, key);
+    // Recursively calls for left subtree when key is less then current key
     } else {
         bst_delete(&(*tree)->left, key);
     }

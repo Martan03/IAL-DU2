@@ -54,41 +54,43 @@ bool is_digit(char digit) {
  * Pro implementaci si můžete v tomto souboru nadefinovat vlastní pomocné funkce.
 */
 void letter_count(bst_node_t **tree, char *input) {
+    // Inits tree
     bst_init(tree);
     int value;
+
+    // Iterates all the characters in the given input
     char current = input[0];
     for (int i = 0; current; current = input[++i]) {
+        // Gets lowercase version of character (only when alphanumeric)
         current = to_lower(input[i]);
+        // Sets current to `_` when current is not alpha and is not space
         if (!is_alpha(current) && current != ' ')
             current = '_';
+
+        // Checks how many times current character appeared and adds 1 to it
         value = 0;
         bst_search(*tree, current, &value);
         value += 1;
+        // Inserts the item to the tree
         bst_insert(tree, current, value);
     }
 }
 
-bool is_balanced(bst_node_t *tree, int *height) {
-    if (!tree) {
-        *height = 0;
-        return true;
-    }
-
-    int left = 0;
-    int right = 0;
-    bool l = is_balanced(tree->left, &left);
-    bool r = is_balanced(tree->right, &right);
-
-    *height = left > right ? left + 1 : right + 1;
-    return (left - right <= 1) && (right - left <= 1) && l && r;
-}
-
+/// @brief Fills given tree with given items so it's balanced
+/// @param tree tree to be filled
+/// @param items items to fill the tree
+/// @param start start index of the items
+/// @param end end index of the items
 void balance(bst_node_t **tree, bst_items_t *items, int start, int end) {
+    // Checks if start is less then end
     if (start >= end)
         return;
 
+    // Gets center of the items on given interval
     int center = (start + end) / 2;
+    // Adds item to the tree
     bst_insert(tree, items->nodes[center]->key, items->nodes[center]->value);
+    // Recursivelly calls balance for both intervals: start-center, center-end
     balance(tree, items, start, center);
     balance(tree, items, center + 1, end);
 }
@@ -104,20 +106,26 @@ void balance(bst_node_t **tree, bst_items_t *items, int start, int end) {
  * Pro implementaci si můžete v tomto souboru nadefinovat vlastní pomocné funkce. Není nutné, aby funkce fungovala *in situ* (in-place).
 */
 void bst_balance(bst_node_t **tree) {
+    // Creates new items list
     bst_items_t items = {
         .capacity = 0,
         .size = 0,
         .nodes = NULL,
     };
+    // Gets items in order
     bst_inorder(*tree, &items);
 
+    // Creates new tree
     bst_node_t *balanced;
     bst_init(&balanced);
 
+    // Makes it fill the tree so it's balanced
     balance(&balanced, &items, 0, items.size);
 
+    // Disposes old tree and sets tree to balanced tree
     bst_dispose(tree);
     *tree = balanced;
 
+    // Frees items list
     free(items.nodes);
 }
